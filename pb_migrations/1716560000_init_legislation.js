@@ -3,25 +3,21 @@ migrate((app) => {
     name: "legislation",
     type: "base",
     system: false,
-    schema: [
+    fields: [
       {
         name: "title",
         type: "text",
         required: true,
         presentable: true,
-        options: {
-          min: 1,
-          max: 500
-        }
+        min: 1,
+        max: 500
       },
       {
         name: "category",
         type: "select",
         required: true,
-        options: {
-          maxSelect: 1,
-          values: ["Yönetmelik", "Yönerge", "Senato Kararı", "Yönetim Kurulu Kararı", "Etik Kurul Kararı"]
-        }
+        values: ["Yönetmelik", "Yönerge", "Senato Kararı", "Yönetim Kurulu Kararı", "Etik Kurul Kararı"],
+        maxSelect: 1
       },
       {
         name: "date",
@@ -31,26 +27,17 @@ migrate((app) => {
       {
         name: "documentNo",
         type: "text",
-        options: {
-          min: 0,
-          max: 100
-        }
+        max: 100
       },
       {
         name: "url",
         type: "text",
-        options: {
-          min: 0,
-          max: 1000
-        }
+        max: 1000
       },
       {
         name: "description",
         type: "text",
-        options: {
-          min: 0,
-          max: 2000
-        }
+        max: 2000
       }
     ],
     listRule: "",
