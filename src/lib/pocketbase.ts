@@ -1,7 +1,21 @@
 import PocketBase from 'pocketbase';
 import { legislationData, type Legislation } from '../data/legislation';
 
-const PB_URL = import.meta.env.PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090';
+const getPocketBaseUrl = () => {
+  if (import.meta.env.PUBLIC_POCKETBASE_URL) {
+    return import.meta.env.PUBLIC_POCKETBASE_URL;
+  }
+  if (typeof window !== 'undefined') {
+    // Connect to port 10006 if accessing locally (as verified by systemd logs)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://127.0.0.1:10006';
+    }
+    return window.location.origin;
+  }
+  return 'http://127.0.0.1:10006';
+};
+
+const PB_URL = getPocketBaseUrl();
 
 export const pb = new PocketBase(PB_URL);
 
