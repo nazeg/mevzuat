@@ -5,3 +5,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# PocketBase Local Server
+pocketbase/
+pb_data/
+*.exe
+*.zip
