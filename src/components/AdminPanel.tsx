@@ -78,20 +78,19 @@ export default function AdminPanel() {
     setAuthError('');
     setIsLoggingIn(true);
     try {
-      // First try login using PocketBase Admins / Users auth
-      // In latest PocketBase versions, we authenticate users using the standard users collection or admins
-      // Standard users auth:
+      // Try normal user login first
       await pb.collection('users').authWithPassword(email, password);
       setIsLoggedIn(true);
       showNotification('success', 'Giriş başarılı.');
       loadLegislation();
     } catch (err: any) {
-      console.warn('Regular user auth failed, trying pocketbase admin auth...', err);
+      console.warn('Regular user auth failed, trying superuser auth...', err);
       try {
-        // Fallback for pocketbase backends with superuser/admin auth (old and new systems)
-        // In pocketbase v0.23+, superusers can be authenticated via pb.admins.authWithPassword or users
-        // Let's try standard users again or provide clear feedback
-        setAuthError('Giriş başarısız. Lütfen e-posta ve şifrenizi kontrol ediniz.');
+        // Fallback to system superusers (PocketBase v0.23+/v0.38+)
+        await pb.collection('_superusers').authWithPassword(email, password);
+        setIsLoggedIn(true);
+        showNotification('success', 'Yönetici girişi başarılı.');
+        loadLegislation();
       } catch (err2) {
         setAuthError('Giriş başarısız. E-posta veya şifre hatalı.');
       }
