@@ -60,11 +60,11 @@ migrate((app) => {
     deleteRule: "@request.auth.id != ''",
   });
 
-  return app.saveCollection(collection);
+  return app.save(collection);
 }, (app) => {
   try {
     const collection = app.findCollectionByNameOrId("legislation");
-    return app.deleteCollection(collection);
+    return app.delete(collection);
   } catch (err) {
     // collection not found
   }
