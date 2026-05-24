@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, ChevronRight, BookOpen, ScrollText, Users, Gavel, LayoutDashboard, History, HelpCircle, Filter } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, ChevronRight, BookOpen, ScrollText, Users, Gavel, LayoutDashboard, History, HelpCircle, Filter, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,21 +7,38 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { legislationData, Legislation } from '@/data/legislation';
+import { getLegislationList } from '@/lib/pocketbase';
 import { cn } from '@/lib/utils';
 
 export default function PageContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Tümü');
+  const [data, setData] = useState<Legislation[]>(legislationData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const list = await getLegislationList();
+        setData(list);
+      } catch (err) {
+        console.error('Error loading data from pocketbase:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
   const categories = [
-    { name: 'Tümü', icon: <LayoutDashboard className="w-4 h-4" />, count: legislationData.length },
-    { name: 'Yönetmelik', icon: <BookOpen className="w-4 h-4" />, count: legislationData.filter(i => i.category === 'Yönetmelik').length },
-    { name: 'Yönerge', icon: <ScrollText className="w-4 h-4" />, count: legislationData.filter(i => i.category === 'Yönerge').length },
-    { name: 'Senato Kararı', icon: <Users className="w-4 h-4" />, count: legislationData.filter(i => i.category === 'Senato Kararı').length },
-    { name: 'Yönetim Kurulu Kararı', icon: <Gavel className="w-4 h-4" />, count: legislationData.filter(i => i.category === 'Yönetim Kurulu Kararı').length },
+    { name: 'Tümü', icon: <LayoutDashboard className="w-4 h-4" />, count: data.length },
+    { name: 'Yönetmelik', icon: <BookOpen className="w-4 h-4" />, count: data.filter(i => i.category === 'Yönetmelik').length },
+    { name: 'Yönerge', icon: <ScrollText className="w-4 h-4" />, count: data.filter(i => i.category === 'Yönerge').length },
+    { name: 'Senato Kararı', icon: <Users className="w-4 h-4" />, count: data.filter(i => i.category === 'Senato Kararı').length },
+    { name: 'Yönetim Kurulu Kararı', icon: <Gavel className="w-4 h-4" />, count: data.filter(i => i.category === 'Yönetim Kurulu Kararı').length },
   ];
 
-  const filteredData = legislationData.filter((item) => {
+  const filteredData = data.filter((item) => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           item.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'Tümü' || item.category === selectedCategory;
@@ -62,8 +79,17 @@ export default function PageContent() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button className="bg-accent hover:bg-accent/90 text-white text-xs font-bold py-2 px-6 rounded transition-colors border-none">
+          <Button 
+            className="bg-accent hover:bg-accent/90 text-white text-xs font-bold py-2 px-6 rounded transition-colors border-none cursor-pointer"
+            onClick={() => window.open('https://ebys.ksbu.edu.tr', '_blank')}
+          >
             EBYS GİRİŞ
+          </Button>
+          <Button 
+            className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold py-2 px-6 rounded transition-colors cursor-pointer"
+            onClick={() => window.location.href = '/admin'}
+          >
+            ADMİN PANELİ
           </Button>
         </div>
       </header>
