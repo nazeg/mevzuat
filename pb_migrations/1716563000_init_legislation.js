@@ -1,4 +1,13 @@
 migrate((app) => {
+  try {
+    const existing = app.findCollectionByNameOrId("legislation");
+    if (existing) {
+      app.delete(existing);
+    }
+  } catch (err) {
+    // collection does not exist, which is fine
+  }
+
   const collection = new Collection({
     name: "legislation",
     type: "base",
