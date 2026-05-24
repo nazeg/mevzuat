@@ -1,18 +1,15 @@
-'use client';
-
 import React, { useState } from 'react';
-import { Search, ChevronRight, Scale, BookOpen, ScrollText, Users, Gavel, ExternalLink, Download, LayoutDashboard, History, HelpCircle, Filter } from 'lucide-react';
+import { Search, ChevronRight, BookOpen, ScrollText, Users, Gavel, LayoutDashboard, History, HelpCircle, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { legislationData, Legislation } from '@/data/legislation';
 import { cn } from '@/lib/utils';
 
-export default function Page() {
+export default function PageContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Tümü');
 
